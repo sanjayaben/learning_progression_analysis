@@ -5,10 +5,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
-import shap
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
-
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def model_logistic_regression():
@@ -31,7 +32,17 @@ def model_logistic_regression():
     y_test_preds = model.predict(X_test)
     print("The accuracy score for the model was {} on {} values.".format(accuracy_score(y_test, y_test_preds), len(y_test)))
     print("Confusion Matrix = {} ".format(confusion_matrix(y_test, y_test_preds)))
+    plot_confusion_matrix(y_test, y_test_preds)
 
+def plot_confusion_matrix(y_true, y_pred):
+    data = confusion_matrix(y_true, y_pred)
+    df_cm = pd.DataFrame(data, columns=np.unique(y_true), index=np.unique(y_true))
+    df_cm.index.name = 'Actual'
+    df_cm.columns.name = 'Predicted'
+    plt.figure(figsize=(10, 7))
+    sns.set(font_scale=1.4)  # for label size
+    sns.heatmap(df_cm, annot=True,cmap='Blues', fmt='g', annot_kws={"size": 16})  # font size
+    plt.show()
 
 def model_svm():
     '''
@@ -130,7 +141,7 @@ def main():
     model_logistic_regression()
     # model_svm()
     # model_knn()
-    tune_hyper_parameters()
+    # tune_hyper_parameters()
 
 
 if __name__ == '__main__':
